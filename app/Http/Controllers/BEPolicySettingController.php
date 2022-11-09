@@ -36,7 +36,7 @@ class BEPolicySettingController extends Controller
 
     public function index()
     {
-        if (!$this->_viewer->isAllowed('setting_policy')) {
+        if (!$this->_viewer->isAllowed('policy_setting')) {
             return redirect('/private');
         }
 
@@ -52,7 +52,7 @@ class BEPolicySettingController extends Controller
 
     public function create()
     {
-        if (!$this->_viewer->isAllowed('setting_policy_create')) {
+        if (!$this->_viewer->isAllowed('policy_setting_create')) {
             return redirect('/private');
         }
 

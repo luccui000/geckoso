@@ -194,7 +194,7 @@ $viewer = $apiCore->getViewer();
         <li class="c-sidebar-nav-item">
             <a class="c-sidebar-nav-link" href="{{url('admin/config')}}">
                 <i class="fa fa-home"></i>
-                trang chủ
+                Trang chủ
             </a>
         </li>
         @endif
@@ -205,6 +205,14 @@ $viewer = $apiCore->getViewer();
                 Tùy Chỉnh
             </a>
         </li>
+        @endif
+        @if ($viewer->isAllowed("banner_setting"))
+            <li class="c-sidebar-nav-item">
+                <a class="c-sidebar-nav-link" href="{{url('admin/banners')}}">
+                    <i class="fa fa-info"></i>
+                    Banner
+                </a>
+            </li>
         @endif
         @if ($viewer->isAllowed("setting_about"))
         <li class="c-sidebar-nav-item">

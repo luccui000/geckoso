@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Model\Banner;
 use App\Model\PolicySetting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -67,8 +68,11 @@ class FEHomeController extends Controller
     //landing
     public function trangChu()
     {
+        $banners = Banner::where('active', 1)
+            ->orderBy('order')
+            ->get();
         $values = [
-
+            'banners' => $banners
         ];
 
         return view("pages.front_end.index", $values);

@@ -234,6 +234,13 @@ Route::post('/admin/policy-setting/update-status', 'BEPolicySettingController@up
 Route::put('/admin/policy-settings/{id}', 'BEPolicySettingController@update');
 Route::delete('/admin/policy-settings/{id}', 'BEPolicySettingController@destroy');
 
+Route::group(['prefix' => 'admin/banners'], function() {
+    Route::get('/', 'BEBannerController@index');
+    Route::post('/', 'BEBannerController@store');
+    Route::put('/', 'BEBannerController@update');
+    Route::post('/update-status', 'BEBannerController@updateStatus');
+});
+
 //authorization
 Route::get('/login', 'BEAuthController@login')->name('login');
 Route::post('/auth/do-login', 'BEAuthController@doLogin');

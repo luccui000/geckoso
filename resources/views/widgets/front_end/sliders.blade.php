@@ -361,101 +361,35 @@ $link4 = $apiCore->getSetting('banner_link_4');
     <div class="SlideshowWrapper nt_se_1581505806578 nt_full se_height_cus_h nt_first">
         <div class="fade_flick_1 slideshow row no-gutters equal_nt nt_slider js_carousel prev_next_0 btn_owl_1 dot_owl_2 dot_color_1 btn_vi_2"
             data-flickity='{ "fade":0,"cellAlign": "center","imagesLoaded": 0,"lazyLoad": 0,"freeScroll": 0,"wrapAround": true,"autoPlay" : 0,"pauseAutoPlayOnHover" : true, "rightToLeft": false, "prevNextButtons": false,"pageDots": true, "contain" : 1,"adaptiveHeight" : 1,"dragThreshold" : 5,"percentPosition": 1 }'>
-            <div id="nt_1585640154849" class="col-12 slideshow__slide">
-                <a href="{{$link1}}">
-                    <div class="oh pr nt_img_txt">
-                        <div class="js_full_ht4 img_slider_block dek_img_slide">
-                            <div class="nt_bg_lz lazyload item__position center center img_tran_ef pa l__0 t__0 r__0 b__0"
-                                data-bgset="{{url('public/') . $bg1}}"
-                                data-ratio="3.096774193548387" data-sizes="auto"></div>
-                        </div>
-                        <div class="js_full_ht4 img_slider_block mb_img_slide">
-                            <div class="nt_bg_lz lazyload item__position center center img_tran_ef pa l__0 t__0 r__0 b__0"
-                                data-bgset="{{url('public/') . $bg1}}"
-                                data-ratio="3.096774193548387" data-sizes="auto"></div>
-                        </div>
-                        <div class="caption-wrap caption-w-1 pe_none z_100 tl_md tl">
-                            <div class="pa_txts caption">
-                                <div class="left_right">
-                                    <div id="b_1585640508369" class="slt4_space"></div>
-                                    <h3 id="b_1585640512264" class="slt4_h3 lh__1 mg__0 max_width_500px">{{$title1}}</h3>
-                                    <div id="b_1585640518653" class="slt4_space"></div>
+            @foreach($banners as $banner)
+                <div id="nt_1585640154849" class="col-12 slideshow__slide">
+                    <a href="{{ $banner->link }}">
+                        <div class="oh pr nt_img_txt">
+                            <div class="js_full_ht4 img_slider_block dek_img_slide">
+                                <div
+                                    class="nt_bg_lz lazyload item__position center center img_tran_ef pa l__0 t__0 r__0 b__0"
+                                    data-bgset="{{  get_image_url($isMobile ? $banner->mobile_image : $banner->desktop_image)  }}"
+                                    data-ratio="3.096774193548387" data-sizes="auto"></div>
+                            </div>
+                            <div class="js_full_ht4 img_slider_block mb_img_slide">
+                                <div class="nt_bg_lz lazyload item__position center center img_tran_ef pa l__0 t__0 r__0 b__0"
+                                    data-bgset="{{  get_image_url($isMobile ? $banner->mobile_image : $banner->desktop_image)  }}"
+                                    data-ratio="3.096774193548387" data-sizes="auto"></div>
+                            </div>
+                            <div class="caption-wrap caption-w-1 pe_none z_100 tl_md tl">
+                                <div class="pa_txts caption">
+                                    <div class="left_right">
+                                        <div id="b_1585640508369" class="slt4_space"></div>
+                                        <h3 id="b_1585640512264" class="slt4_h3 lh__1 mg__0 max_width_500px">{{ $banner->title }}</h3>
+                                        <div id="b_1585640518653" class="slt4_space"></div>
+                                    </div>
                                 </div>
                             </div>
+                            <a href="#" target="_blank" class="pa t__0 l__0 b__0 r__0 pe_none"></a>
                         </div>
-                        <a href="#" target="_blank" class="pa t__0 l__0 b__0 r__0 pe_none"></a>
-                    </div>
-                </a>
-            </div>
-            <div id="nt_1585640159361" class="col-12 slideshow__slide">
-                <a href="{{$link2}}">
-                    <div class="oh pr nt_img_txt">
-                        <div class="js_full_ht4 img_slider_block dek_img_slide">
-                            <div class="nt_bg_lz lazyload item__position center center img_tran_ef pa l__0 t__0 r__0 b__0"
-                                data-bgset="{{url('public/') . $bg2}}"
-                                data-ratio="3.0917874396135265" data-sizes="auto"></div>
-                        </div>
-                        <div class="js_full_ht4 img_slider_block mb_img_slide">
-                            <div class="nt_bg_lz lazyload item__position center center img_tran_ef pa l__0 t__0 r__0 b__0"
-                                data-bgset="{{url('public/') . $bg2}}"
-                                data-ratio="3.0917874396135265" data-sizes="auto"></div>
-                        </div>
-                        <div class="caption-wrap caption-w-1 pe_none z_100 tl_md tl">
-                            <div class="pa_txts caption">
-                                <div id="b_1585640490350" class="slt4_space"></div>
-                                <h3 id="b_1585640480446" class="slt4_h3 lh__1 mg__0 max_width_500px">{{$title2}}</h3>
-                                <div id="b_1585640492985" class="slt4_space"></div>
-                            </div>
-                        </div>
-                    </div>
-                </a>
-            </div>
-            <div id="nt_1585640162346" class="col-12 slideshow__slide">
-                <a href="{{$link3}}">
-                    <div class="oh pr nt_img_txt">
-                        <div class="js_full_ht4 img_slider_block dek_img_slide">
-                            <div class="nt_bg_lz lazyload item__position center center img_tran_ef pa l__0 t__0 r__0 b__0"
-                                data-bgset="{{url('public/') . $bg3}}"
-                                data-ratio="3.096774193548387" data-sizes="auto"></div>
-                        </div>
-                        <div class="js_full_ht4 img_slider_block mb_img_slide">
-                            <div class="nt_bg_lz lazyload item__position center center img_tran_ef pa l__0 t__0 r__0 b__0"
-                                data-bgset="{{url('public/') . $bg3}}"
-                                data-ratio="3.096774193548387" data-sizes="auto"></div>
-                        </div>
-                        <div class="caption-wrap caption-w-1 pe_none z_100 tl_md tl">
-                            <div class="pa_txts caption">
-                                <div id="b_1585640490350" class="slt4_space"></div>
-                                <h3 id="b_1585640480446" class="slt4_h3 lh__1 mg__0 max_width_500px">{{$title3}}</h3>
-                                <div id="b_1585640492985" class="slt4_space"></div>
-                            </div>
-                        </div>
-                    </div>
-                </a>
-            </div>
-            <div id="nt_1585640162346" class="col-12 slideshow__slide">
-                <a href="{{$link4}}">
-                    <div class="oh pr nt_img_txt">
-                        <div class="js_full_ht4 img_slider_block dek_img_slide">
-                            <div class="nt_bg_lz lazyload item__position center center img_tran_ef pa l__0 t__0 r__0 b__0"
-                                data-bgset="{{url('public/') . $bg4}}"
-                                data-ratio="3.096774193548387" data-sizes="auto"></div>
-                        </div>
-                        <div class="js_full_ht4 img_slider_block mb_img_slide">
-                            <div class="nt_bg_lz lazyload item__position center center img_tran_ef pa l__0 t__0 r__0 b__0"
-                                data-bgset="{{url('public/') . $bg4}}"
-                                data-ratio="3.096774193548387" data-sizes="auto"></div>
-                        </div>
-                        <div class="caption-wrap caption-w-1 pe_none z_100 tl_md tl">
-                            <div class="pa_txts caption">
-                                <div id="b_1585640490350" class="slt4_space"></div>
-                                <h3 id="b_1585640480446" class="slt4_h3 lh__1 mg__0 max_width_500px">{{$title4}}</h3>
-                                <div id="b_1585640492985" class="slt4_space"></div>
-                            </div>
-                        </div>
-                    </div>
-                </a>
-            </div>
+                    </a>
+                </div>
+            @endforeach
         </div>
     </div>
 </div>
