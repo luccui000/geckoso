@@ -150,24 +150,26 @@ $cates = $apiFE->getProductCategories(6);
                         >
                             <div class="menu_footer widget_footer">
                                 <ul class="menu">
-                                    <li class="menu-item text-capitalize">
-                                        <a href="{{url('lien-he')}}">liên hệ</a>
-                                    </li>
-                                    <li class="menu-item text-capitalize">
-                                        <a href="{{url('chinh-sach-thanh-vien')}}">chính sách thành viên</a>
-                                    </li>
-                                    <li class="menu-item text-capitalize">
-                                        <a href="{{url('chinh-sach-bao-mat')}}">chính sách bảo mật</a>
-                                    </li>
-                                    <li class="menu-item text-capitalize">
-                                        <a href="{{url('chinh-sach-thanh-toan')}}">chính sách thanh toán</a>
-                                    </li>
-                                    <li class="menu-item text-capitalize">
-                                        <a href="{{url('chinh-sach-giao-hang')}}">chính sách giao hàng</a>
-                                    </li>
-                                    <li class="menu-item text-capitalize">
-                                        <a href="{{url('chinh-sach-doi-tra')}}">chính sách đổi trả</a>
-                                    </li>
+                                    @foreach($policy_setting_share as $ps)
+                                        <li class="menu-item text-capitalize">
+                                            <a href="{{ url($ps->href) }}">{{ $ps->title }}</a>
+                                        </li>
+                                    @endforeach
+{{--                                    <li class="menu-item text-capitalize">--}}
+{{--                                        <a href="{{url('chinh-sach-thanh-vien')}}">chính sách thành viên</a>--}}
+{{--                                    </li>--}}
+{{--                                    <li class="menu-item text-capitalize">--}}
+{{--                                        <a href="{{url('chinh-sach-bao-mat')}}">chính sách bảo mật</a>--}}
+{{--                                    </li>--}}
+{{--                                    <li class="menu-item text-capitalize">--}}
+{{--                                        <a href="{{url('chinh-sach-thanh-toan')}}">chính sách thanh toán</a>--}}
+{{--                                    </li>--}}
+{{--                                    <li class="menu-item text-capitalize">--}}
+{{--                                        <a href="{{url('chinh-sach-giao-hang')}}">chính sách giao hàng</a>--}}
+{{--                                    </li>--}}
+{{--                                    <li class="menu-item text-capitalize">--}}
+{{--                                        <a href="{{url('chinh-sach-doi-tra')}}">chính sách đổi trả</a>--}}
+{{--                                    </li>--}}
                                 </ul>
                             </div>
                         </aside>

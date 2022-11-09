@@ -115,11 +115,11 @@ Route::post('/admin/product/review/update-status', 'BEProductController@reviewSt
 Route::get('/', 'FEHomeController@trangChu');
 Route::get('/gioi-thieu', 'FEHomeController@gioiThieu');
 Route::get('/lien-he', 'FEHomeController@lienHe');
-Route::get('/chinh-sach-thanh-vien', 'FEHomeController@chinhSachThanhVien');
-Route::get('/chinh-sach-giao-hang', 'FEHomeController@chinhSachGiaoHang');
-Route::get('/chinh-sach-doi-tra', 'FEHomeController@chinhSachDoiTra');
-Route::get('/chinh-sach-thanh-toan', 'FEHomeController@chinhSachThanhToan');
-Route::get('/chinh-sach-bao-mat', 'FEHomeController@chinhSachBaoMat');
+//Route::get('/chinh-sach-thanh-vien', 'FEHomeController@chinhSachThanhVien');
+//Route::get('/chinh-sach-giao-hang', 'FEHomeController@chinhSachGiaoHang');
+//Route::get('/chinh-sach-doi-tra', 'FEHomeController@chinhSachDoiTra');
+//Route::get('/chinh-sach-thanh-toan', 'FEHomeController@chinhSachThanhToan');
+//Route::get('/chinh-sach-bao-mat', 'FEHomeController@chinhSachBaoMat');
 
 Route::get('/thuong-hieu', 'FEHomeController@thuongHieu');
 Route::get('/thuong-hieu/{href}', 'FEHomeController@thuongHieuChiTiet');
@@ -225,6 +225,15 @@ Route::post('/admin/order/update-shipped', 'BECartController@updateShipped');
 Route::post('/ghn/create-order', 'GhnController@createOrder');
 Route::post('/admin/order/ship-manual', 'GhnController@shipManual');
 
+// Policy settings
+Route::get('/admin/policy-settings', 'BEPolicySettingController@index');
+Route::get('/admin/policy-settings/create', 'BEPolicySettingController@create');
+Route::post('/admin/policy-settings', 'BEPolicySettingController@store');
+Route::get('/admin/policy-settings/{id}/edit', 'BEPolicySettingController@edit');
+Route::post('/admin/policy-setting/update-status', 'BEPolicySettingController@updateStatus');
+Route::put('/admin/policy-settings/{id}', 'BEPolicySettingController@update');
+Route::delete('/admin/policy-settings/{id}', 'BEPolicySettingController@destroy');
+
 //authorization
 Route::get('/login', 'BEAuthController@login')->name('login');
 Route::post('/auth/do-login', 'BEAuthController@doLogin');
@@ -274,4 +283,4 @@ Route::post('/dh/zalopay', 'FECartController@zalopayCreate');
 Route::get('/dh/zalopay/return', 'FECartController@zalopayReturn');
 
 
-
+Route::get('{slug}', 'FEHomeController@policy');

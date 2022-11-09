@@ -214,38 +214,46 @@ $viewer = $apiCore->getViewer();
             </a>
         </li>
         @endif
-        @if ($viewer->isAllowed("setting_policy"))
-        <li class="c-sidebar-nav-item">
-            <a class="c-sidebar-nav-link" href="{{url('admin/setting?s=policy_client')}}">
-                <i class="fa fa-list-ol"></i>
-                Chính Sách Thành Viên
-            </a>
-        </li>
-        <li class="c-sidebar-nav-item">
-            <a class="c-sidebar-nav-link" href="{{url('admin/setting?s=policy_shipment')}}">
-                <i class="fa fa-list-ol"></i>
-                Chính Sách Giao Hàng
-            </a>
-        </li>
-        <li class="c-sidebar-nav-item">
-            <a class="c-sidebar-nav-link" href="{{url('admin/setting?s=policy_refund')}}">
-                <i class="fa fa-list-ol"></i>
-                Chính Sách Đổi Trả
-            </a>
-        </li>
-        <li class="c-sidebar-nav-item">
-            <a class="c-sidebar-nav-link" href="{{url('admin/setting?s=policy_payment')}}">
-                <i class="fa fa-list-ol"></i>
-                Chính Sách Thanh Toán
-            </a>
-        </li>
-        <li class="c-sidebar-nav-item">
-            <a class="c-sidebar-nav-link" href="{{url('admin/setting?s=policy_security')}}">
-                <i class="fa fa-list-ol"></i>
-                Chính Sách Bảo Mật
-            </a>
-        </li>
-        @endif
+            @if ($viewer->isAllowed("setting_policy"))
+                <li class="c-sidebar-nav-item">
+                    <a class="c-sidebar-nav-link" href="{{url('admin/policy-settings')}}">
+                        <i class="fa fa-lock"></i>
+                        Chính sách và điều khoản
+                    </a>
+                </li>
+            @endif
+{{--        @if ($viewer->isAllowed("setting_policy"))--}}
+{{--        <li class="c-sidebar-nav-item">--}}
+{{--            <a class="c-sidebar-nav-link" href="{{url('admin/setting?s=policy_client')}}">--}}
+{{--                <i class="fa fa-list-ol"></i>--}}
+{{--                Chính Sách Thành Viên--}}
+{{--            </a>--}}
+{{--        </li>--}}
+{{--        <li class="c-sidebar-nav-item">--}}
+{{--            <a class="c-sidebar-nav-link" href="{{url('admin/setting?s=policy_shipment')}}">--}}
+{{--                <i class="fa fa-list-ol"></i>--}}
+{{--                Chính Sách Giao Hàng--}}
+{{--            </a>--}}
+{{--        </li>--}}
+{{--        <li class="c-sidebar-nav-item">--}}
+{{--            <a class="c-sidebar-nav-link" href="{{url('admin/setting?s=policy_refund')}}">--}}
+{{--                <i class="fa fa-list-ol"></i>--}}
+{{--                Chính Sách Đổi Trả--}}
+{{--            </a>--}}
+{{--        </li>--}}
+{{--        <li class="c-sidebar-nav-item">--}}
+{{--            <a class="c-sidebar-nav-link" href="{{url('admin/setting?s=policy_payment')}}">--}}
+{{--                <i class="fa fa-list-ol"></i>--}}
+{{--                Chính Sách Thanh Toán--}}
+{{--            </a>--}}
+{{--        </li>--}}
+{{--        <li class="c-sidebar-nav-item">--}}
+{{--            <a class="c-sidebar-nav-link" href="{{url('admin/setting?s=policy_security')}}">--}}
+{{--                <i class="fa fa-list-ol"></i>--}}
+{{--                Chính Sách Bảo Mật--}}
+{{--            </a>--}}
+{{--        </li>--}}
+{{--        @endif--}}
         @if ($viewer->isAllowed("setting_tu_van"))
             <li class="c-sidebar-nav-item">
                 <a class="c-sidebar-nav-link" href="{{url('admin/events')}}">

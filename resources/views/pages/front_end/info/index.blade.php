@@ -1,14 +1,7 @@
 <?php
 $apiCore = new \App\Api\Core;
 $viewer = $apiCore->getViewer();
-$body = $apiCore->getSetting('policy_shipment');
-
-if (!empty($body)) {
-    $body = str_replace('../public/uploaded/tinymce', url('') . '/public/uploaded/tinymce', $body);
-}
-
 ?>
-
 @extends('templates.front_end.master')
 
 @section('content')
@@ -20,12 +13,16 @@ if (!empty($body)) {
 
     <div class="container mb__50">
         @include('modals.breadcrumb', [
-            'text1' => 'chính sách giao hàng',
+            'text1' => $page_title,
         ])
 
         <div class="row">
             <div class="col-md-12">
-                <?php echo $body;?>
+                @if(!empty($policy->content))
+                    {!! $policy->content !!}
+                @else
+                    <p>Không tìm thấy nội dung</p>
+                @endif
             </div>
         </div>
     </div>

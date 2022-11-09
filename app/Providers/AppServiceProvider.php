@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Model\PolicySetting;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
 use Illuminate\Support\Facades\Schema;
@@ -30,5 +32,6 @@ class AppServiceProvider extends ServiceProvider
     {
         //
         Schema::defaultStringLength(191);
+        View::share('policy_setting_share', PolicySetting::where('active', 1)->get());
     }
 }

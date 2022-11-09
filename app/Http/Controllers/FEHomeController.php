@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Model\PolicySetting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
@@ -575,6 +576,24 @@ class FEHomeController extends Controller
         return view("pages.front_end.users.loved_products", $values);
     }
 
+    public function policy(Request $request, $slug)
+    {
+        $policy = PolicySetting::where([
+                'href'  => $slug,
+                'active' => 1
+            ])
+            ->first();
 
+        if(!$policy)
+            return view('errors.404');
 
+        $siteTitle = $this->_apiCore->getSetting('site_title');
+
+        $values = [
+            'page_title'    => $policy->title,
+            'policy'        => $policy
+        ];
+
+        return view("pages.front_end.info.index", $values);
+    }
 }
