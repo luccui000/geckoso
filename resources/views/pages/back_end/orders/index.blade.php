@@ -27,7 +27,7 @@ $viewer = $apiCore->getViewer();
         <div class="fade-in">
             <div class="row">
                 <div class="col-md-12">
-                    <div class="btn-menu hidden">
+                    <div class="btn-menu">
                         <button class="btn btn-success btn-sm mb-1" onclick="exportItems()" >
                             <i class="fa fa-file-excel mr-1"></i>
                             xuất excel

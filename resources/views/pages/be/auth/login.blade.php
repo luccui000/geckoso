@@ -80,14 +80,14 @@ $siteLogo = $apiCore->getSetting('site_logo');
                     <input type="hidden" name="_token" value="{{csrf_token()}}" />
                     <div class="form-group">
                         <label>Email / Điện Thoại</label>
-                        <input class="au-input au-input--full" autocomplete="off" type="text" name="email" id="frm-email" placeholder="email / điện thoại">
+                        <input value="admin@geckoso.com" class="au-input au-input--full" autocomplete="off" type="text" name="email" id="frm-email" placeholder="email / điện thoại">
                     </div>
                     <div class="form-group" id="err-email">
                         <div class="alert alert-danger hidden">Hãy nhập email / điện thoại.</div>
                     </div>
                     <div class="form-group">
                         <label>Mật Khẩu</label>
-                        <input class="au-input au-input--full" autocomplete="off" type="password" name="password" id="frm-password" placeholder="*******">
+                        <input value="admin" class="au-input au-input--full" autocomplete="off" type="password" name="password" id="frm-password" placeholder="*******">
                     </div>
                     <div class="form-group" id="err-password">
                         <div class="alert alert-danger hidden">Hãy nhập mật khẩu.</div>

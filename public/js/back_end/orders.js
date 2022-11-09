@@ -182,7 +182,7 @@ function confirmShipped(id) {
 function exportItems() {
     var frm = jQuery('#frm-search');
     var frmOrder = jQuery('#frm-order');
-    var href = gks.baseURL + '/admin/receipt/export?p=1';
+    var href = gks.baseURL + '/admin/order/export?p=1';
 
     var keyword = frm.find('input[name=keyword]').val().trim();
     var filter = frm.find('input[name=filter]').val().trim();

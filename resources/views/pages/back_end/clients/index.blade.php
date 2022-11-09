@@ -28,6 +28,12 @@ $viewer = $apiCore->getViewer();
                                 Tạo Khách Hàng
                             </button>
                         @endif
+                        @if ($viewer->isAllowed("client_excel_export") || $viewer->isStaff())
+                            <button class="btn btn-success btn-sm mb-1" onclick="exportItems()" >
+                                <i class="fa fa-file-excel mr-1"></i>
+                                Xuất Excel
+                            </button>
+                        @endif
                     </div>
 
                     <div class="frm-search">

@@ -41,6 +41,9 @@ Route::get('/admin/client/add', 'BEClientController@add');
 Route::post('/admin/client/save', 'BEClientController@save');
 Route::post('/admin/client/delete', 'BEClientController@delete');
 Route::post('/admin/client/change-password', 'BEClientController@changePassword');
+
+Route::get('/admin/client/export', 'BEClientController@exportItem');
+
 //categories
 Route::get('/admin/product-categories', 'BECategoryController@index');
 Route::post('/admin/category/save', 'BECategoryController@save');

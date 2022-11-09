@@ -392,6 +392,15 @@ class User extends Authenticatable
         return $this->deleted;
     }
 
+    public function firstOrder()
+    {
+        return $this->hasOne(UserCart::class)
+            ->where('deleted', 0)
+            ->orderBy('created_at', 'asc');
+    }
 
-
+    public function doiTacHopLe()
+    {
+        return null;
+    }
 }

@@ -64,3 +64,17 @@ function jspopupdelete() {
         },
     });
 }
+
+function exportItems() {
+    var frm = jQuery('.frm-search');
+    var href = gks.baseURL + '/admin/client/export?p=1';
+
+    var keyword = frm.find('input[name=keyword]').val().trim();
+    var filter = frm.find('input[name=filter]').val().trim();
+
+    href += '&keyword=' + keyword;
+    href += '&filter=' + filter;
+
+    // console.log(href)
+    gotoPage(href);
+}

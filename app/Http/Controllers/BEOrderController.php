@@ -327,6 +327,10 @@ class BEOrderController extends Controller
 
     public function exportItem(Request $request)
     {
+        if (!$this->_viewer->isStaff()) {
+            return redirect('/private');
+        }
+
         $params = $request->all();
 //        echo '<pre>';var_dump($params);die;
         $dateFrom = (isset($params['date_from'])) ? date('Y-m-d', strtotime($params['date_from'])) : NULL;
@@ -431,4 +435,5 @@ class BEOrderController extends Controller
         return Excel::download($excel, 'export_don_hang.xlsx');
 
     }
+
 }

@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Excel\ExportClient;
+use App\Model\UserCart;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 
+use Maatwebsite\Excel\Facades\Excel;
 use \Session;
 
 use App\Api\Core;
@@ -283,5 +286,35 @@ class BEClientController extends Controller
         }
 
         return response()->json([]);
+    }
+
+    public function exportItem(Request $request)
+    {
+        if (!$this->_viewer->isAllowed("client_excel_export") && !$this->_viewer->isStaff()) {
+            return redirect('/private');
+        }
+
+        $params = $request->all();
+
+        $filterFields = ['name', 'phone', 'email'];
+
+        if(!$request->has('filter') || !in_array($params['filter'], $filterFields)) {
+            $params['filter'] = 'name';
+        }
+
+        $clients = User::query("users")
+            ->with(['firstOrder'])
+            ->select('users.*')
+            ->leftJoin('user_blocks', 'user_blocks.user_id', '=', 'users.id')
+            ->where("users.deleted", 0)
+            ->where("users.level_id", 4)
+            ->when($request->has('keyword'), function($query) use($params) {
+                $search = '%' . str_replace(' ', '%', trim($params['keyword'])) . '%';
+                $query->where($params['filter'], 'LIKE', $search);
+            })->get();
+
+        $excel = new ExportClient();
+        $excel->setItems($clients);
+        return Excel::download($excel, 'export_khach_hang.xlsx');
     }
 }
