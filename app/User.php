@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Model\UserCategory;
 use App\Model\UserPerson;
 use App\Model\UserRelationship;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -402,5 +403,10 @@ class User extends Authenticatable
     public function doiTacHopLe()
     {
         return null;
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(UserCategory::class);
     }
 }

@@ -241,6 +241,13 @@ Route::group(['prefix' => 'admin/banners'], function() {
     Route::post('/update-status', 'BEBannerController@updateStatus');
 });
 
+Route::group(['prefix' => 'admin/client-categories'], function() {
+    Route::get('/', 'UserCategoryController@index');
+    Route::post('/', 'UserCategoryController@store');
+    Route::put('/{id}', 'UserCategoryController@update');
+    Route::delete('/{id}', 'UserCategoryController@destroy');
+});
+
 //authorization
 Route::get('/login', 'BEAuthController@login')->name('login');
 Route::post('/auth/do-login', 'BEAuthController@doLogin');

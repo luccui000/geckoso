@@ -176,6 +176,15 @@ $viewer = $apiCore->getViewer();
         </li>
         @endif
 
+        @if ($viewer->isAllowed("client_view"))
+            <li class="c-sidebar-nav-item">
+                <a class="c-sidebar-nav-link" href="{{url('admin/client-categories')}}">
+                    <i class="fa fa-list"></i>
+                    Nhóm khách hàng
+                </a>
+            </li>
+        @endif
+
         @if ($viewer->isAllowed("setting_home")
             || $viewer->isAllowed("setting_config")
             || $viewer->isAllowed("setting_about")
