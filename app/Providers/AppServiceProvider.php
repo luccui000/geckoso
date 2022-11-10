@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Model\PolicySetting;
+use App\Model\Widget;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
@@ -33,5 +34,13 @@ class AppServiceProvider extends ServiceProvider
         //
         Schema::defaultStringLength(191);
         View::share('policy_setting_share', PolicySetting::where('active', 1)->get());
+        View::composer('pages.front_end.index', function($view) {
+            $widgets = Widget::where([
+                    'active'    => 1,
+                    'deleted'   => 0
+                ])->get();
+
+            $view->with('widget_share', $widgets);
+        });
     }
 }

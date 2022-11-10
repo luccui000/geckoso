@@ -234,18 +234,32 @@ Route::post('/admin/policy-setting/update-status', 'BEPolicySettingController@up
 Route::put('/admin/policy-settings/{id}', 'BEPolicySettingController@update');
 Route::delete('/admin/policy-settings/{id}', 'BEPolicySettingController@destroy');
 
-Route::group(['prefix' => 'admin/banners'], function() {
-    Route::get('/', 'BEBannerController@index');
-    Route::post('/', 'BEBannerController@store');
-    Route::put('/', 'BEBannerController@update');
-    Route::post('/update-status', 'BEBannerController@updateStatus');
-});
 
-Route::group(['prefix' => 'admin/client-categories'], function() {
-    Route::get('/', 'UserCategoryController@index');
-    Route::post('/', 'UserCategoryController@store');
-    Route::put('/{id}', 'UserCategoryController@update');
-    Route::delete('/{id}', 'UserCategoryController@destroy');
+Route::group(['prefix' => 'admin'], function() {
+    // Banner
+    Route::group(['prefix' => 'banners'], function() {
+        Route::get('/', 'BEBannerController@index');
+        Route::post('/', 'BEBannerController@store');
+        Route::put('/', 'BEBannerController@update');
+        Route::post('/update-status', 'BEBannerController@updateStatus');
+    });
+
+    // User categories
+    Route::group(['prefix' => 'client-categories'], function() {
+        Route::get('/', 'UserCategoryController@index');
+        Route::post('/', 'UserCategoryController@store');
+        Route::put('/{id}', 'UserCategoryController@update');
+        Route::delete('/{id}', 'UserCategoryController@destroy');
+    });
+
+    // Widget
+    Route::group(['prefix' => 'widgets'], function() {
+        Route::get('/', 'BEWidgetController@index');
+        Route::post('/reload', 'BEWidgetController@reload');
+        Route::post('/{id}/order', 'BEWidgetController@order');
+        Route::delete('/{id}', 'BEWidgetController@destroy');
+        Route::put('/{id}/update-status', 'BEWidgetController@updateStatus');
+    });
 });
 
 //authorization

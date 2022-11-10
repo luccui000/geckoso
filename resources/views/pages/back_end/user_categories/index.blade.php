@@ -14,7 +14,7 @@ $viewer = $apiCore->getViewer();
             <div class="row">
                 <div class="col-md-12">
                     <div class="btn-menu">
-                        @if ($viewer->isAllowed('user_cateogory_add'))
+                        @if ($viewer->isAllowed('user_category_add'))
                             <button class="btn btn-primary btn-sm mb-1" data-toggle="modal" data-target="#createUserCategory" >
                                 <i class="fa fa-plus-circle mr-1"></i>
                                 Tạo nhóm khách hàng mới
