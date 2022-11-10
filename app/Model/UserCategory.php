@@ -22,4 +22,9 @@ class UserCategory extends Model
     {
         return $this->hasMany(UserCategory::class, 'parent_id');
     }
+
+    public function discount()
+    {
+        return $this->hasOne(Discount::class, 'user_category_id', 'id');
+    }
 }

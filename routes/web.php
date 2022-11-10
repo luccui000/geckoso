@@ -270,6 +270,14 @@ Route::group(['prefix' => 'admin'], function() {
         Route::delete('/{id}', 'BEProductRateController@destroy');
         Route::put('/{id}/update-status', 'BEProductRateController@updateStatus');
     });
+
+    Route::group(['prefix' => 'client-discounts'], function() {
+        Route::get('/', 'BEDiscountController@index');
+        Route::post('/', 'BEDiscountController@store');
+        Route::put('/{id}', 'BEDiscountController@update');
+        Route::delete('/{id}', 'BEDiscountController@destroy');
+        Route::put('/{id}/update-status', 'BEDiscountController@updateStatus');
+    });
 });
 
 //authorization
