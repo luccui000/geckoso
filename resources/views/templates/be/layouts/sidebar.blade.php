@@ -223,6 +223,16 @@ $viewer = $apiCore->getViewer();
                 </a>
             </li>
         @endif
+
+        @if ($viewer->isAllowed('widget'))
+            <li class="c-sidebar-nav-item">
+                <a class="c-sidebar-nav-link" href="{{url('admin/widgets')}}">
+                    <i class="fa fa-cogs"></i>
+                    Widget
+                </a>
+            </li>
+        @endif
+
         @if ($viewer->isAllowed("setting_about"))
         <li class="c-sidebar-nav-item">
             <a class="c-sidebar-nav-link" href="{{url('admin/setting?s=about_us')}}">
