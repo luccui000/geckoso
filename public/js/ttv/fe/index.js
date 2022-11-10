@@ -573,8 +573,8 @@ function jscartdhcal() {
     }
 
     frm.find('#cart_all').text(totalAll);
-    frm.find('#cart_discount').text(totalDiscount);
-    frm.find('#cart_total').text(totalPaid);
+    // frm.find('#cart_discount').text(totalDiscount);
+    // frm.find('#cart_total').text(totalPaid);
 
     frm.find('#frm-ids').val(ids);
     frm.find('input[name=total_all]').val(totalAll);
@@ -631,8 +631,8 @@ function jscartdhcalsp() {
     }
 
     frm.find('#cart_all').text(totalAll);
-    frm.find('#cart_discount').text(totalDiscount);
-    frm.find('#cart_total').text(totalPaid);
+    // frm.find('#cart_discount').text(totalDiscount);
+    // frm.find('#cart_total').text(totalPaid);
 
     frm.find('#frm-ids').val(ids);
     frm.find('input[name=total_all]').val(totalAll);

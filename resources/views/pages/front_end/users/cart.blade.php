@@ -1,7 +1,17 @@
 <?php
 $apiCore = new \App\Api\Core;
 $viewer = $apiCore->getViewer();
+$viewer->load('category.discount');
 
+$discountType = null;
+$discountValue = 0;
+$discount = 0;
+
+
+if($viewer->category && $viewer->category->discount) {
+    $discountType = $viewer->category->discount->type;
+    $discountValue = $viewer->category->discount->value;
+}
 $apiMobile = new \App\Api\Mobile;
 $isMobile = $apiMobile->isMobile() ? 1 : 0;
 
@@ -424,7 +434,7 @@ $URLCart = url('chinh-sach-thanh-toan');
                                         </td>
                                         <td class="text-right">
                                             <strong class="text-black fs-18">
-                                                <span class="number_format" id="cart_discount">0</span>
+                                                <span class="number_format" id="cart_discount"></span>
                                                 <span class="currency_format">₫</span>
                                             </strong>
                                         </td>
@@ -440,6 +450,7 @@ $URLCart = url('chinh-sach-thanh-toan');
                                             </strong>
                                         </td>
                                     </tr>
+
                                     <tr>
                                         <td>
                                             <label class="frm-label">tổng thanh toán:</label>
@@ -993,13 +1004,23 @@ $URLCart = url('chinh-sach-thanh-toan');
                                         <input class="text-center text-uppercase" type="text" name="coupon" onkeypress="pressNoSpace(event)" placeholder="nhập mã khuyến mãi" />
                                     </div>
                                 </div>
-                                <div class="row text-right hidden ma_giam_gia">
+                                <div class="row text-right ma_giam_gia">
                                     <div class="col-md-7 mb__10 text-right">
                                         <label class="frm-label">giảm giá đặc biệt:</label>
                                     </div>
                                     <div class="col-md-5 mb__10 text-right">
                                         <strong class="text-black fs-18">
-                                            <span class="number_format" id="cart_discount">0</span>
+                                            <span class="number_format" id="cart_discount">
+                                                @php
+                                                    if($discountType === 'percent') {
+                                                        $discount = ($priceAll - $shippingFee) * $discountValue / 100;
+                                                    } else if($discountType === 'amount') {
+                                                        $discount = $discountValue;
+                                                    }
+
+                                                @endphp
+                                                {{ $discount }}
+                                            </span>
                                             <span class="currency_format">₫</span>
                                         </strong>
                                     </div>
@@ -1021,7 +1042,14 @@ $URLCart = url('chinh-sach-thanh-toan');
                                     </div>
                                     <div class="col-md-5 mb__10 text-right">
                                         <strong class="color-money fs-18">
-                                            <span class="number_format text-bold" id="cart_total">{{$priceAll}}</span>
+                                            <span class="number_format text-bold" id="cart_total">
+                                                @php
+                                                    if($freeShip && $discountType != 'percent') {
+                                                        $priceAll = $priceAll - $shippingFee;
+                                                    }
+                                                @endphp
+                                                {{$priceAll - $discount}}
+                                            </span>
                                             <span class="currency_format">₫</span>
                                         </strong>
                                     </div>
@@ -1056,15 +1084,15 @@ $URLCart = url('chinh-sach-thanh-toan');
                     <input type="hidden" name="total_order" value="0" />
 
                     <input type="hidden" name="total_all" value="{{$priceAll}}" />
-                    <input type="hidden" name="total_paid" value="{{$priceAll}}" />
+                    <input type="hidden" name="total_paid" value="{{$priceAll - $discount}}" />
                     <input type="hidden" name="total_paid_no_ship" value="{{$priceAll}}" />
                     <input type="hidden" name="payment_by" value="cod" />
 
-                    <input type="hidden" name="percent_discount" value="0" />
-                    <input type="hidden" name="total_discount" value="0" />
+                    <input type="hidden" name="percent_discount" value="{{ $discountType == 'percent' ? $discountValue : 0 }}" />
+                    <input type="hidden" name="total_discount" value="{{ $discount }}" />
 
 {{--                    giam gia--}}
-                    <input type="hidden" name="discount_gg" value="0" />
+                    <input type="hidden" name="discount_gg" value="{{ $discount }}" />
 {{--                    khuyen mai--}}
                     <input type="hidden" name="discount_km" value="0" />
 
