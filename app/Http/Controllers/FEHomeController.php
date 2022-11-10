@@ -312,6 +312,26 @@ class FEHomeController extends Controller
 
         return view("pages.front_end.products.index", $values);
     }
+
+    public function getSanPham(Request $request)
+    {
+        $products = $this->_apiFE->getProducts([
+            'pagination' => 1,
+            'page' => $request->get('page', 1)
+        ]);
+
+        return response()->json($products);
+    }
+
+    public function getAvatar(Request $request, $id)
+    {
+        $product = Product::find($id);
+
+        return response()->json([
+            'avatar' => $product->getAvatar()
+        ]);
+    }
+
     public function danhMuc($href, Request $request)
     {
         $item = ProductCategory::where('href', $href)

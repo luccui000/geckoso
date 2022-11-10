@@ -40,7 +40,7 @@ $products = $apiFE->getProducts([
                 <div class="panel-content products-wrapper">
                     <div class="row">
                         @if (count($products))
-                            @include('widgets.front_end.pagination_products')
+                            @include('widgets.front_end.onscroll_products')
                         @else
                             <div class="alert alert-warning">Đang Cập Nhật...</div>
                         @endif
