@@ -262,6 +262,14 @@ Route::group(['prefix' => 'admin'], function() {
         Route::delete('/{id}', 'BEWidgetController@destroy');
         Route::put('/{id}/update-status', 'BEWidgetController@updateStatus');
     });
+
+    Route::group(['prefix' => 'product-rates'], function() {
+        Route::get('/', 'BEProductRateController@index');
+        Route::post('/', 'BEProductRateController@store');
+        Route::put('/{id}', 'BEProductRateController@update');
+        Route::delete('/{id}', 'BEProductRateController@destroy');
+        Route::put('/{id}/update-status', 'BEProductRateController@updateStatus');
+    });
 });
 
 //authorization

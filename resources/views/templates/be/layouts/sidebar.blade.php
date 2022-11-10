@@ -100,6 +100,14 @@ $viewer = $apiCore->getViewer();
             </a>
         </li>
         @endif
+        @if ($viewer->isAllowed("product_rate_view"))
+            <li class="c-sidebar-nav-item">
+                <a class="c-sidebar-nav-link" href="{{url('admin/product-rates')}}">
+                    <i class="fa fa-box"></i>
+                    Đánh giá
+                </a>
+            </li>
+        @endif
 
         @if ($viewer->isAllowed("system_category_view")
             || $viewer->isAllowed("wish_view")
