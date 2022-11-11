@@ -633,6 +633,34 @@ function jscartdhcalsp() {
 
     jscartdhvalid(true);
 }
+
+function handleGetShipping(event) {
+    const wardId = $(event).find(':selected').val();
+
+    if(wardId) {
+        jQuery.ajax({
+            url: gks.baseURL + '/shipping-fee',
+            type: 'POST',
+            data: {
+                ward_id: wardId,
+                _token: gks.tempTK,
+            },
+            success: function (response) {
+                console.log(response)
+                const subtotal = $('input[name=total_all]').val();
+                const overcart = $('input[name=over_cart]').val();
+                console.log(subtotal)
+                console.log(overcart)
+
+                if(!response.error && overcart > 0 && subtotal < overcart) {
+                    $('input[name=ghn_fee]').val(response.fee.total);
+                    jscartdhcal();
+                }
+            },
+        });
+    }
+}
+
 function jscartdhship() {
     var frm = jQuery('#frm-cart');
 

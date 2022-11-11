@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Contracts\ShippingGateway;
 use App\Model\UserPerson;
-use App\Services\GiaoHangNhanh;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
@@ -65,11 +63,10 @@ class FECartController extends Controller
     protected $_viewer = null;
     protected $_shippingService = null;
 
-    public function __construct(ShippingGateway $shippingGateway)
+    public function __construct()
     {
         $this->_apiCore = new Core();
         $this->_apiFE = new FE();
-        $this->_shippingService = $shippingGateway;
     }
 
     public function gioHang()
@@ -214,9 +211,6 @@ class FECartController extends Controller
         $districtId = (isset($values['district_id'])) ? $this->_apiCore->parseToInt($values['district_id']) : 0;
         $wardId = (isset($values['ward_id'])) ? $this->_apiCore->parseToInt($values['ward_id']) : 0;
 
-        $fee = $this->_shippingService->shipping($wardId, $districtId, $provinceId, GiaoHangNhanh::TIET_KIEM);
-
-        return response()->json($fee);
         //free 1 so tinh/thanh
         $freeCity = false;
         $row = Setting::where('title', 'payment_ship_free_city')->first();

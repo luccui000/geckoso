@@ -18,4 +18,8 @@ class GhnWard extends Model
         'district_id', 'title', 'code',
     ];
 
+    public function district()
+    {
+        return $this->hasOne(GhnDistrict::class,  'district_id', 'district_id');
+    }
 }

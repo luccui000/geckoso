@@ -173,6 +173,7 @@ Route::post('/get-opts-wish', 'FEPublicController@getOptWish');
 Route::post('/get-wish', 'FEPublicController@getWish');
 Route::post('/get-opts-card', 'FEPublicController@getOptCard');
 Route::post('/get-card', 'FEPublicController@getCard');
+Route::post('/shipping-fee', 'FEPublicController@getShippingFee');
 //==========================================================================================
 
 //test

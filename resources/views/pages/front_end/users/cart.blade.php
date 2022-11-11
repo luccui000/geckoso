@@ -814,7 +814,7 @@ $URLCart = url('chinh-sach-thanh-toan');
                                                 </select>
                                             </div>
                                             <div class="col-md-4" id="ele-ward">
-                                                <select required name="ward_id" class="form-control select-css" >
+                                                <select required name="ward_id" class="form-control select-css" onchange="handleGetShipping(this)" >
                                                     <option value="">Hãy chọn phường / xã</option>
                                                     @if (count($wards))
                                                         @foreach($wards as $ite)
