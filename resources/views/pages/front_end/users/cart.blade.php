@@ -59,32 +59,19 @@ if ($viewer) {
     }
 }
 
+$shippingFee = 0;
+$discountAmount = 0;
+$priceFinal = 0;
+
 $URLCart = url('chinh-sach-thanh-toan');
 ?>
 
 @extends('templates.front_end.master')
 
 @section('content')
+    <link rel="stylesheet" href="{{ url('public/css/ttv/cart.css') }}">
     <style type="text/css">
-        .mau_thiep_temp,
-        .upload_preview {
-            clear: both;
-            position: relative;
-        }
-        .upload_preview .img-item,
-        .mau_thiep_temp .img-item {
-            float: left;
-            margin-right: 5px;
-        }
-        .upload_preview .img-preview,
-        .mau_thiep_temp .img-preview {
-            max-width: 170px;
-            max-height: 300px;
-        }
 
-        .mfp-ajax-holder .mfp-content, .mfp-inline-holder .mfp-content {
-            width: auto;
-        }
         @if ($isMobile)
         .mfp-content {
             position: absolute;
@@ -93,46 +80,12 @@ $URLCart = url('chinh-sach-thanh-toan');
             margin-top: -150px;
         }
         @endif
-
-        .mini_cart_actions {
-            margin-top: 0;
-        }
-
-        #shopify-section-cart-template input[type=email],
-        #shopify-section-cart-template input[type=text] {
-            height: 35px;
-            border-radius: 5px !important;
-            color: #000 !important;
-        }
-
-        textarea {
-            border-radius: 5px !important;
-            color: #000 !important;
-        }
-
         .price .number_format {
             @if($isMobile)
-            font-size: 16px;
-            @else
-            font-size: 18px;
-        @endif
-}
-
-        .cart_countdown {
-            display: inline-block;
-            margin-bottom: 30px;
-            background-color: #fcb800;
-            font-size: 15px;
-            font-weight: 500;
-            border-radius: 4px;
-        }
-
-        .cart_countdown.dn {
-            display: none !important;
-        }
-
-        .height_80px {
-            height: 80px;
+                font-size: 16px;
+                @else
+                font-size: 18px;
+            @endif
         }
     </style>
 
@@ -151,11 +104,6 @@ $URLCart = url('chinh-sach-thanh-toan');
             <div class="empty_cart_page tc" style="margin-top: 20px !important;">
                 @if ($saved)
                     <?php //$cart = $apiCore->getItem('cart', $saved); ?>
-                    <style type="text/css">
-                        .empty_cart_page>i:after {
-                            display: none;
-                        }
-                    </style>
                     <i class="fa fa-check text-success mb__30 fs__90"></i>
                     <h4 class="cart_page_heading mg__0 mb__20 tu fs__30 text-success">đặt hàng thành công!!!</h4>
                     {{--                @if (!empty($cart->expected_delivery_time))--}}
@@ -191,46 +139,51 @@ $URLCart = url('chinh-sach-thanh-toan');
                 </div>
 
                 <div class="cart_items">
-                    <?php
-                    foreach ($products as $p):
-                    $sale = null;
+                    <?php foreach ($products as $p):
+                        $sale = null;
 
-                    if ($viewer) {
-                        $product = $apiCore->getItem('product', $p->product_id);
+                        if ($viewer) {
+                            $product = $apiCore->getItem('product', $p->product_id);
+                            $quantity = $p->quantity;
+                            $priceMain = $p->price_main;
+                            $priceOne = $p->price_pay;
+                            $priceDiscount = $p->discount;
+                        } else {
+                            $product = $p;
 
-                        $quantity = $p->quantity;
-                        $priceMain = $p->price_main;
-                        $priceOne = $p->price_pay;
-                        $priceDiscount = $p->discount;
+                            $cartQty = (Session::get('USR_CART_QTY'));
 
-                    } else {
-                        $product = $p;
+                            $quantity = 1;
+                            if ($cartQty && count($cartQty) && isset($cartQty[$product->id])) {
+                                $quantity = (int)$cartQty[$product->id];
+                            }
 
-                        $cartQty = (Session::get('USR_CART_QTY'));
-
-                        $quantity = 1;
-                        if ($cartQty && count($cartQty) && isset($cartQty[$product->id])) {
-                            $quantity = (int)$cartQty[$product->id];
+                            $priceMain = $product->price_main;
+                            $priceOne = $product->price_pay;
+                            $priceDiscount = $product->discount;
                         }
 
-                        $priceMain = $product->price_main;
-                        $priceOne = $product->price_pay;
-                        $priceDiscount = $product->discount;
-                    }
+                        $priceRow = $priceOne * $quantity;
+                        $priceAll += $priceRow;
+                        $totalQuantity += $quantity;
+                        $ids .= $product->id . "_" . $quantity . ";";
 
-                    $priceRow = $priceOne * $quantity;
-                    $priceAll += $priceRow;
-                    $totalQuantity += $quantity;
-                    $ids .= $product->id . "_" . $quantity . ";";
+                        //shipping
+                        if ($overFee > 0 && $priceAll >= $overFee) {
+                            $freeShip = true; // free
+                        } else {
+                            $priceAll = $priceAll + $shippingFee;
+                            $shippingFee = 1000;
+                        }
 
-                    //shipping
-                    if ($overFee > 0 && $priceAll >= $overFee) {
-                        //free
-                        $freeShip = true;
-                    } else {
-                        $priceAll = $priceAll + $shippingFee;
-                    }
-
+                        if($discountType == 'percent') {
+                            $discountAmount = ($priceAll - $shippingFee) * $discountValue / 100;
+                        } else if ($discountType == 'amount') {
+                            $discountAmount = $discountValue;
+                        }
+                        echo $priceAll . ' ' . $shippingFee . ' ' . $discountValue;
+                        // Gia cuoi cung = Thanh tien - tien duoc giam + phi ship
+                        $priceFinal = $priceAll - $discountAmount + $shippingFee;
                     ?>
                     @if ($isMobile)
                         <table class="table mb__10 cart_item c_ite" id="c_ite_{{$product->id}}" data-id="{{$product->id}}">
@@ -365,7 +318,7 @@ $URLCart = url('chinh-sach-thanh-toan');
                                 <div class="col-12 col-md-4 col-lg-3 tc">
                                     <div class="cart_meta_prices price">
                                         <div class="cart_price">
-                                            @if ($priceOne!= $priceMain)
+                                            @if ($priceOne != $priceMain)
                                                 <del class="price_old">
                                                     <span class="number_format">{{$priceMain}}</span>
                                                     <span class="currency_format">₫</span>
@@ -385,7 +338,7 @@ $URLCart = url('chinh-sach-thanh-toan');
                                         <input type="number" class="input-text qty text tc qty_pr_js"
                                                step="1" min="1" max="9999" name="quantity"
                                                size="4" pattern="[0-9]*" inputmode="numeric"
-                                               value="{{$quantity}}"  onkeyup="jscartdhmq({{$product->id}})"
+                                               value="{{ $quantity }}"  onkeyup="jscartdhmq({{$product->id}})"
                                         >
                                         <div class="qty tc fs__14">
                                             <a onclick="jscartdhmu({{$product->id}});jscartdhvalid(false);"
@@ -755,8 +708,11 @@ $URLCart = url('chinh-sach-thanh-toan');
                                         <label class="frm-label fs-11">Mã giảm giá đặc biệt</label>
                                     </div>
                                     <div class="col-md-9 mt__15" id="ele-referer">
-                                        <input class="text-center text-uppercase" type="text" name="ref_code" onkeypress="pressNoSpace(event)"
-                                               @if(!empty($refCode)) value="{{$refCode}}" @endif
+                                        <input
+                                            class="text-center text-uppercase"
+                                            type="text" name="ref_code"
+                                            onkeypress="pressNoSpace(event)"
+                                            @if(!empty($refCode)) value="{{$refCode}}" @endif
                                         />
                                     </div>
                                 </div>
@@ -774,9 +730,15 @@ $URLCart = url('chinh-sach-thanh-toan');
                                             <label class="frm-label fs-11 required">Điện Thoại <span class="required">*</span></label>
                                         </div>
                                         <div class="col-md-9 mt__15" id="ele-phone">
-                                            <input class="text-center" required type="text" name="phone" autocomplete="off"
-                                                   onkeypress="return isInputPhone(event, this)"
-                                                   oncopy="return false;" oncut="return false;" onpaste="return false;"
+                                            <input
+                                                class="text-center"
+                                                required type="text"
+                                                name="phone"
+                                                autocomplete="off"
+                                                onkeypress="return isInputPhone(event, this)"
+                                                oncopy="return false;"
+                                                oncut="return false;"
+                                                onpaste="return false;"
                                             />
                                         </div>
                                     </div>
@@ -790,39 +752,37 @@ $URLCart = url('chinh-sach-thanh-toan');
                                     </div>
                                 @else
 {{--                                    tang khach --}}
-                                    @if(count($persons))
-                                        <div class="row">
-                                            <div class="col-md-3 mt__15">
-                                                <label class="frm-label fs-11 text-black-50">gửi tặng</label>
-                                            </div>
-                                            <div class="col-md-9 mt__15">
-                                                <select name="person_id" class="form-control" onchange="jscartgetdate(this)">
-                                                    <option value="">Không Tặng Cho Ai</option>
-                                                    @foreach($persons as $person)
-                                                        <option value="{{$person->id}}">{{$person->getRelationship() ? $person->getRelationship()->getTitle() . ': ' . $person->getTitle() : $person->getTitle()}}</option>
-                                                    @endforeach
-                                                </select>
+                                @if(count($persons))
+                                    <div class="row">
+                                        <div class="col-md-3 mt__15">
+                                            <label class="frm-label fs-11 text-black-50">gửi tặng</label>
+                                        </div>
+                                        <div class="col-md-9 mt__15">
+                                            <select name="person_id" class="form-control" onchange="jscartgetdate(this)">
+                                                <option value="">Không Tặng Cho Ai</option>
+                                                @foreach($persons as $person)
+                                                    <option value="{{$person->id}}">{{$person->getRelationship() ? $person->getRelationship()->getTitle() . ': ' . $person->getTitle() : $person->getTitle()}}</option>
+                                                @endforeach
+                                            </select>
 
-                                                <select name="date_id" class="form-control mt__15 hidden">
+                                            <select name="date_id" class="form-control mt__15 hidden"></select>
 
-                                                </select>
-
-                                                <div class="">
-                                                    <div class="row">
-                                                        <div class="col-md-6 mt__15">
-                                                            <input onclick="jscartdcnh(1)" checked="checked" name="dia_chi_1" type="checkbox" class="mr__5 width_height_20" style="margin: 0; cursor: pointer;" />
-                                                            <label>Dùng địa chỉ của tôi</label>
-                                                        </div>
-                                                        <div class="col-md-6 mt__15">
-                                                            <input onclick="jscartdcnh(2)" name="dia_chi_2" type="checkbox" class="mr__5 width_height_20" style="margin: 0; cursor: pointer;" />
-                                                            <label>Dùng địa chỉ người được tặng</label>
-                                                        </div>
+                                            <div class="">
+                                                <div class="row">
+                                                    <div class="col-md-6 mt__15">
+                                                        <input onclick="jscartdcnh(1)" checked="checked" name="dia_chi_1" type="checkbox" class="mr__5 width_height_20" style="margin: 0; cursor: pointer;" />
+                                                        <label>Dùng địa chỉ của tôi</label>
+                                                    </div>
+                                                    <div class="col-md-6 mt__15">
+                                                        <input onclick="jscartdcnh(2)" name="dia_chi_2" type="checkbox" class="mr__5 width_height_20" style="margin: 0; cursor: pointer;" />
+                                                        <label>Dùng địa chỉ người được tặng</label>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    @endif
+                                    </div>
                                 @endif
+                            @endif
                                 <div class="row">
                                     <div class="col-md-3 mt__15">
                                         <label class="frm-label fs-11 required">Địa chỉ nhận hàng <span class="required">*</span></label>
@@ -993,7 +953,7 @@ $URLCart = url('chinh-sach-thanh-toan');
                                     </div>
                                     <div class="col-md-5 mb__10 text-right">
                                         <strong class="text-black fs-18">
-                                            <span class="number_format" id="cart_all">{{$priceAll}}</span>
+                                            <span class="number_format" id="cart_all">{{ $priceAll }}</span>
                                             <span class="currency_format">₫</span>
                                         </strong>
                                     </div>
@@ -1001,7 +961,7 @@ $URLCart = url('chinh-sach-thanh-toan');
                                 <div class="row hidden">
                                     <div class="col-md-6 mb__10"></div>
                                     <div class="col-md-6 mb__10" id="ele-coupon">
-                                        <input class="text-center text-uppercase" type="text" name="coupon" onkeypress="pressNoSpace(event)" placeholder="nhập mã khuyến mãi" />
+                                        <input name="coupon" class="text-center text-uppercase" type="text" onkeypress="pressNoSpace(event)" placeholder="nhập mã khuyến mãi" />
                                     </div>
                                 </div>
                                 <div class="row text-right ma_giam_gia">
@@ -1011,15 +971,7 @@ $URLCart = url('chinh-sach-thanh-toan');
                                     <div class="col-md-5 mb__10 text-right">
                                         <strong class="text-black fs-18">
                                             <span class="number_format" id="cart_discount">
-                                                @php
-                                                    if($discountType === 'percent') {
-                                                        $discount = ($priceAll - $shippingFee) * $discountValue / 100;
-                                                    } else if($discountType === 'amount') {
-                                                        $discount = $discountValue;
-                                                    }
-
-                                                @endphp
-                                                {{ $discount }}
+                                                {{ $discountAmount }}
                                             </span>
                                             <span class="currency_format">₫</span>
                                         </strong>
@@ -1031,7 +983,13 @@ $URLCart = url('chinh-sach-thanh-toan');
                                     </div>
                                     <div class="col-md-5 mb__10 text-right">
                                         <strong class="fs-18">
-                                            <span class="number_format @if($freeShip) line_through @endif" id="cart_shipping">{{$shippingFee}}</span>
+                                            <span
+                                                class="number_format"
+                                                id="cart_shipping"
+                                                class="@if($freeShip) line_through @endif"
+                                            >
+                                                {{$shippingFee}}
+                                            </span>
                                             <span class="currency_format">₫</span>
                                         </strong>
                                     </div>
@@ -1042,13 +1000,11 @@ $URLCart = url('chinh-sach-thanh-toan');
                                     </div>
                                     <div class="col-md-5 mb__10 text-right">
                                         <strong class="color-money fs-18">
-                                            <span class="number_format text-bold" id="cart_total">
-                                                @php
-                                                    if($freeShip && $discountType != 'percent') {
-                                                        $priceAll = $priceAll - $shippingFee;
-                                                    }
-                                                @endphp
-                                                {{$priceAll - $discount}}
+                                            <span
+                                                class="number_format text-bold"
+                                                id="cart_total"
+                                            >
+                                                {{ $priceFinal }}
                                             </span>
                                             <span class="currency_format">₫</span>
                                         </strong>
@@ -1084,15 +1040,16 @@ $URLCart = url('chinh-sach-thanh-toan');
                     <input type="hidden" name="total_order" value="0" />
 
                     <input type="hidden" name="total_all" value="{{$priceAll}}" />
-                    <input type="hidden" name="total_paid" value="{{$priceAll - $discount}}" />
-                    <input type="hidden" name="total_paid_no_ship" value="{{$priceAll}}" />
+                    <input type="hidden" name="total_paid" value="{{ $priceFinal }}" />
+                    <input type="hidden" name="total_paid_no_ship" value="{{ $priceFinal - $shippingFee }}" />
                     <input type="hidden" name="payment_by" value="cod" />
 
-                    <input type="hidden" name="percent_discount" value="{{ $discountType == 'percent' ? $discountValue : 0 }}" />
-                    <input type="hidden" name="total_discount" value="{{ $discount }}" />
+                    <input type="hidden" name="percent_type" value="{{ $discountType }}" />
+                    <input type="hidden" name="percent_discount" value="{{ $discountType == 'percent' ? $discountAmount : 0 }}" />
+                    <input type="hidden" name="total_discount" value="{{ $discountAmount }}" />
 
 {{--                    giam gia--}}
-                    <input type="hidden" name="discount_gg" value="{{ $discount }}" />
+                    <input type="hidden" name="discount_gg" value="{{ $discountType == 'percent' ? $discountAmount : 0 }}" />
 {{--                    khuyen mai--}}
                     <input type="hidden" name="discount_km" value="0" />
 
