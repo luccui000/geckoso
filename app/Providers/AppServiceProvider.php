@@ -2,8 +2,12 @@
 
 namespace App\Providers;
 
+use App\Contracts\FileUploadContract;
+use App\Contracts\ShippingGateway;
 use App\Model\PolicySetting;
 use App\Model\Widget;
+use App\Services\FileUpload;
+use App\Services\GiaoHangNhanh;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
@@ -18,10 +22,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
         if (env('APP_ENV') === 'production') {
             $this->app['url']->forceScheme('https');
         }
+
+        $this->app->singleton(ShippingGateway::class, function() {
+            return new GiaoHangNhanh();
+        });
     }
 
     /**

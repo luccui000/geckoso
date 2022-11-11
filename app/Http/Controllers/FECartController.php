@@ -61,6 +61,7 @@ class FECartController extends Controller
     protected $_apiCore = null;
     protected $_apiFE = null;
     protected $_viewer = null;
+    protected $_shippingService = null;
 
     public function __construct()
     {

@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Contracts\ShippingGateway;
 use App\Model\CardTemplate;
 use App\Model\Wish;
+use App\Services\GiaoHangNhanh;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
@@ -58,11 +60,13 @@ class FEPublicController extends Controller
 {
     protected $_apiCore = null;
     protected $_apiFE = null;
+    protected $_shippingService;
 
-    public function __construct()
+    public function __construct(ShippingGateway $shippingGateway)
     {
         $this->_apiCore = new Core();
         $this->_apiFE = new FE();
+        $this->_shippingService = $shippingGateway;
     }
 
     //general
@@ -97,8 +101,9 @@ class FEPublicController extends Controller
                 if (count($items)) {
                     foreach ($items as $ite) {
                         $arr[] = [
-                            'id' => $ite->id,
+                            'id'    => $ite->id,
                             'title' => $ite->title,
+                            'code'  => $ite->code,
                         ];
                     }
                 }
@@ -187,5 +192,36 @@ class FEPublicController extends Controller
         }
 
         return response()->json(['VALID' => true, 'ARR' => $arr]);
+    }
+
+    public function getShippingFee(Request $request)
+    {
+        try {
+            $id = $request->post('ward_id');
+            $ward = GhnWard::with('district.province')->find($id);
+
+            if($ward && $ward->district && $ward->district->province) {
+                $wardId = $ward->code;
+                $districtId = $ward->district->district_id;
+                $provinceId = $ward->district->province->province_id;
+
+                $fee = $this->_shippingService->shipping($wardId, $districtId, $provinceId, GiaoHangNhanh::TIET_KIEM);
+
+                return response()->json([
+                    'error' => false,
+                    'fee'   => $fee
+                ]);
+            } else {
+                return response()->json([
+                    'error'     => true,
+                    'message'   => 'Data not found'
+                ]);
+            }
+        } catch (\Exception $ex) {
+            return response()->json([
+                'error'     => true,
+                'message'   => $ex->getMessage()
+            ]);
+        }
     }
 }

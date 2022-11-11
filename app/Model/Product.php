@@ -423,4 +423,9 @@ class Product extends Item
             'star_count' => $star,
         ]);
     }
+
+    public function rates()
+    {
+        return $this->belongsToMany(Rate::class, 'product_rates');
+    }
 }

@@ -509,6 +509,7 @@ function jscartdhmq(ite) {
 
     //cal
     var iteOne = parseInt(bind.find('input[name=ite_one]').val());
+
     bind.find('.one_total').text(iteOne * value);
     jsbindmf();
     jscartdhcal();
@@ -533,15 +534,13 @@ function jscartdhcal() {
     var totalAll = 0;
     var totalPaid = 0;
     var totalPaidNoShip = 0;
-    var totalDiscount = 0;
-    var percentDiscount = parseFloat(frm.find('input[name=percent_discount]').val());
     var overCart = parseInt(frm.find('input[name=over_cart]').val());
     var totalShip = parseInt(frm.find('input[name=ghn_fee]').val());
     var freeCity = parseInt(frm.find('input[name=free_city]').val());
     var freeShip = false;
     frm.find('#cart_shipping').removeClass('line_through');
 
-    var percentDiscountGG = parseFloat(frm.find('input[name=discount_gg]').val());
+    let discountAmount = parseFloat(frm.find('input[name=total_discount]').val());
 
     frm.find('.cart_items .c_ite').each(function (pos, ele) {
         var bind = jQuery(ele);
@@ -553,19 +552,14 @@ function jscartdhcal() {
         ids += iteId + '_' + iteQua + ';';
     });
 
-    if (percentDiscountGG > 0) {
-        totalDiscount = parseInt(totalAll * percentDiscountGG / 100);
-        jQuery('.ma_giam_gia').removeClass('hidden');
-    }
 
-    totalPaidNoShip = totalAll - totalDiscount;
+    totalPaidNoShip = totalAll - discountAmount;
 
     //shipping fee
     if (overCart > 0 && totalPaidNoShip >= overCart && freeCity) {
-        //free
+        freeShip = true;
         totalPaid = totalPaidNoShip;
         jscartdhvalid(true);
-        freeShip = true;
         frm.find('#cart_shipping').addClass('line_through');
     } else {
         //must update again
@@ -573,12 +567,12 @@ function jscartdhcal() {
     }
 
     frm.find('#cart_all').text(totalAll);
-    frm.find('#cart_discount').text(totalDiscount);
+    frm.find('#cart_discount').text(discountAmount);
     frm.find('#cart_total').text(totalPaid);
 
     frm.find('#frm-ids').val(ids);
     frm.find('input[name=total_all]').val(totalAll);
-    frm.find('input[name=total_discount]').val(totalDiscount);
+    frm.find('input[name=total_discount]').val(+discountAmount);
     frm.find('input[name=total_paid]').val(totalPaid);
     frm.find('input[name=total_paid_no_ship]').val(totalPaidNoShip);
 
@@ -600,7 +594,7 @@ function jscartdhcalsp() {
     var freeShip = false;
     frm.find('#cart_shipping').removeClass('line_through');
 
-    var percentDiscountGG = parseFloat(frm.find('input[name=discount_gg]').val());
+    let discountAmount = parseFloat(frm.find('input[name=total_discount]').val());
 
     frm.find('.cart_items .c_ite').each(function (pos, ele) {
         var bind = jQuery(ele);
@@ -612,31 +606,26 @@ function jscartdhcalsp() {
         ids += iteId + '_' + iteQua + ';';
     });
 
-    if (percentDiscountGG > 0) {
-        totalDiscount = parseInt(totalAll * percentDiscountGG / 100);
-        jQuery('.ma_giam_gia').removeClass('hidden');
-    }
-
-    totalPaidNoShip = totalAll - totalDiscount;
+    totalPaidNoShip = totalAll - discountAmount;
 
     //shipping fee
     if (overCart > 0 && totalPaidNoShip >= overCart && freeCity) {
-        //free
-        totalPaid = totalPaidNoShip;
         freeShip = true;
+        totalPaid = totalPaidNoShip;
+        jscartdhvalid(true);
         frm.find('#cart_shipping').addClass('line_through');
     } else {
-        //no update
+        //must update again
         totalPaid = totalPaidNoShip + totalShip;
     }
 
     frm.find('#cart_all').text(totalAll);
-    frm.find('#cart_discount').text(totalDiscount);
+    frm.find('#cart_discount').text(discountAmount);
     frm.find('#cart_total').text(totalPaid);
 
     frm.find('#frm-ids').val(ids);
     frm.find('input[name=total_all]').val(totalAll);
-    frm.find('input[name=total_discount]').val(totalDiscount);
+    frm.find('input[name=total_discount]').val(+discountAmount);
     frm.find('input[name=total_paid]').val(totalPaid);
     frm.find('input[name=total_paid_no_ship]').val(totalPaidNoShip);
 
@@ -644,6 +633,34 @@ function jscartdhcalsp() {
 
     jscartdhvalid(true);
 }
+
+function handleGetShipping(event) {
+    const wardId = $(event).find(':selected').val();
+
+    if(wardId) {
+        jQuery.ajax({
+            url: gks.baseURL + '/shipping-fee',
+            type: 'POST',
+            data: {
+                ward_id: wardId,
+                _token: gks.tempTK,
+            },
+            success: function (response) {
+                console.log(response)
+                const subtotal = $('input[name=total_all]').val();
+                const overcart = $('input[name=over_cart]').val();
+                console.log(subtotal)
+                console.log(overcart)
+
+                if(!response.error && overcart > 0 && subtotal < overcart) {
+                    $('input[name=ghn_fee]').val(response.fee.total);
+                    jscartdhcal();
+                }
+            },
+        });
+    }
+}
+
 function jscartdhship() {
     var frm = jQuery('#frm-cart');
 

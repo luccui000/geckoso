@@ -100,6 +100,14 @@ $viewer = $apiCore->getViewer();
             </a>
         </li>
         @endif
+        @if ($viewer->isAllowed("product_rate_view"))
+            <li class="c-sidebar-nav-item">
+                <a class="c-sidebar-nav-link" href="{{url('admin/product-rates')}}">
+                    <i class="fa fa-box"></i>
+                    Đánh giá
+                </a>
+            </li>
+        @endif
 
         @if ($viewer->isAllowed("system_category_view")
             || $viewer->isAllowed("wish_view")
@@ -179,8 +187,17 @@ $viewer = $apiCore->getViewer();
         @if ($viewer->isAllowed("client_view"))
             <li class="c-sidebar-nav-item">
                 <a class="c-sidebar-nav-link" href="{{url('admin/client-categories')}}">
-                    <i class="fa fa-list"></i>
+                    <i class="fa fa-users"></i>
                     Nhóm khách hàng
+                </a>
+            </li>
+        @endif
+
+        @if ($viewer->isAllowed("discount_view"))
+            <li class="c-sidebar-nav-item">
+                <a class="c-sidebar-nav-link" href="{{url('admin/client-discounts')}}">
+                    <i class="fa fa-percent"></i>
+                    Ưu đãi
                 </a>
             </li>
         @endif

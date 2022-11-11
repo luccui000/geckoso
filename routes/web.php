@@ -173,6 +173,7 @@ Route::post('/get-opts-wish', 'FEPublicController@getOptWish');
 Route::post('/get-wish', 'FEPublicController@getWish');
 Route::post('/get-opts-card', 'FEPublicController@getOptCard');
 Route::post('/get-card', 'FEPublicController@getCard');
+Route::post('/shipping-fee', 'FEPublicController@getShippingFee');
 //==========================================================================================
 
 //test
@@ -261,6 +262,22 @@ Route::group(['prefix' => 'admin'], function() {
         Route::post('/{id}/order', 'BEWidgetController@order');
         Route::delete('/{id}', 'BEWidgetController@destroy');
         Route::put('/{id}/update-status', 'BEWidgetController@updateStatus');
+    });
+
+    Route::group(['prefix' => 'product-rates'], function() {
+        Route::get('/', 'BEProductRateController@index');
+        Route::post('/', 'BEProductRateController@store');
+        Route::put('/{id}', 'BEProductRateController@update');
+        Route::delete('/{id}', 'BEProductRateController@destroy');
+        Route::put('/{id}/update-status', 'BEProductRateController@updateStatus');
+    });
+
+    Route::group(['prefix' => 'client-discounts'], function() {
+        Route::get('/', 'BEDiscountController@index');
+        Route::post('/', 'BEDiscountController@store');
+        Route::put('/{id}', 'BEDiscountController@update');
+        Route::delete('/{id}', 'BEDiscountController@destroy');
+        Route::put('/{id}/update-status', 'BEDiscountController@updateStatus');
     });
 });
 

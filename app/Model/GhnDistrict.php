@@ -18,4 +18,8 @@ class GhnDistrict extends Model
         'province_id', 'district_id', 'title', 'code',
     ];
 
+    public function province()
+    {
+        return $this->belongsTo(GhnProvince::class, 'province_id', 'province_id');
+    }
 }
