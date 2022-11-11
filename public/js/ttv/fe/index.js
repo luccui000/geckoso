@@ -494,10 +494,10 @@ function jscartdhmqvalid(ele) {
     bind.val(value);
 }
 function jscartdhmq(ite) {
-    var bind = jQuery('#c_ite_' + ite);
+    const bind = jQuery('#c_ite_' + ite);
 
     //prevent
-    var value = parseInt(bind.find('input[name=quantity]').val());
+    let value = parseInt(bind.find('input[name=quantity]').val());
 
     if (value <= 0 || !value || value === '') {
         value = 1;
@@ -508,7 +508,7 @@ function jscartdhmq(ite) {
     bind.find('input[name=quantity]').val(value);
 
     //cal
-    var iteOne = parseInt(bind.find('input[name=ite_one]').val());
+    const iteOne = parseInt(bind.find('input[name=ite_one]').val());
 
     bind.find('.one_total').text(iteOne * value);
     jsbindmf();
@@ -529,29 +529,39 @@ function jscartdhvalid(valid) {
     }
 }
 function jscartdhcal() {
-    var frm = jQuery('#frm-cart');
-    var ids = '';
-    var totalAll = 0;
-    var totalPaid = 0;
-    var totalPaidNoShip = 0;
-    var overCart = parseInt(frm.find('input[name=over_cart]').val());
-    var totalShip = parseInt(frm.find('input[name=ghn_fee]').val());
-    var freeCity = parseInt(frm.find('input[name=free_city]').val());
-    var freeShip = false;
+    const frm = jQuery('#frm-cart');
+    let ids = '';
+    let totalAll = 0;
+    let totalPaid = 0;
+    let totalPaidNoShip = 0;
+
+    let overCart = parseInt(frm.find('input[name=over_cart]').val());
+    let totalShip = parseInt(frm.find('input[name=ghn_fee]').val());
+    let freeCity = parseInt(frm.find('input[name=free_city]').val());
+    let freeShip = false;
+
     frm.find('#cart_shipping').removeClass('line_through');
 
-    let discountAmount = parseFloat(frm.find('input[name=total_discount]').val());
 
     frm.find('.cart_items .c_ite').each(function (pos, ele) {
-        var bind = jQuery(ele);
-        var iteId = parseInt(bind.attr('data-id'));
-        var iteOne = parseInt(bind.find('input[name=ite_one]').val());
-        var iteQua = bind.find('input[name=quantity]').val() !== '' ? parseInt(bind.find('input[name=quantity]').val()) : 0;
+        let bind = jQuery(ele);
+        let iteId = parseInt(bind.attr('data-id'));
+        let iteOne = parseInt(bind.find('input[name=ite_one]').val());
+        let iteQua = bind.find('input[name=quantity]').val() !== '' ? parseInt(bind.find('input[name=quantity]').val()) : 0;
         totalAll += parseInt(iteQua * iteOne);
 
         ids += iteId + '_' + iteQua + ';';
     });
 
+    const discountType = frm.find('input[name=discount_type]').val();
+    const discountValue = frm.find('input[name=discount_value]').val();
+
+    let discountAmount = 0;
+    if(discountType === 'percent') {
+        discountAmount = totalAll * discountValue / 100;
+    } else if (discountType === 'amount') {
+        discountAmount = discountValue;
+    }
 
     totalPaidNoShip = totalAll - discountAmount;
 
@@ -649,12 +659,16 @@ function handleGetShipping(event) {
                 console.log(response)
                 const subtotal = $('input[name=total_all]').val();
                 const overcart = $('input[name=over_cart]').val();
-                console.log(subtotal)
-                console.log(overcart)
 
                 if(!response.error && overcart > 0 && subtotal < overcart) {
+                    $('#cart_shipping').val(response.fee.total)
                     $('input[name=ghn_fee]').val(response.fee.total);
-                    jscartdhcal();
+                    jsbindmf();
+                } else if (!response.error && overcart > 0 && subtotal > overcart) {
+                    $('input[name=ghn_fee]').val(response.fee.total);
+                    $('#cart_shipping').text(response.fee.total)
+                    $('#cart_shipping').addClass('line_through');
+                    jsbindmf();
                 }
             },
         });

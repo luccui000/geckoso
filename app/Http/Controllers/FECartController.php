@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Contracts\ShippingGateway;
 use App\Model\UserPerson;
+use App\Services\GiaoHangNhanh;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
@@ -63,10 +65,11 @@ class FECartController extends Controller
     protected $_viewer = null;
     protected $_shippingService = null;
 
-    public function __construct()
+    public function __construct(ShippingGateway $shippingGateway)
     {
         $this->_apiCore = new Core();
         $this->_apiFE = new FE();
+        $this->_shippingService = $shippingGateway;
     }
 
     public function gioHang()
@@ -92,7 +95,6 @@ class FECartController extends Controller
                 ];
             }
         } else {
-
             $cartQty = (Session::get('USR_CART_QTY'));
             $cart = (Session::get('USR_CART'));
             if ($cart && count($cart)) {
@@ -213,6 +215,7 @@ class FECartController extends Controller
 
         //free 1 so tinh/thanh
         $freeCity = false;
+
         $row = Setting::where('title', 'payment_ship_free_city')->first();
         if ($row && !empty($row->value)) {
             $arr = (array)json_decode($row->value);
@@ -221,9 +224,57 @@ class FECartController extends Controller
             }
         }
 
+        $viewer = $this->_apiCore->getViewer();
+        $items = array_filter(explode(';', $ids), function($item) {
+            return !empty($item);
+        });
+
+        if($viewer) {
+            $cart = $viewer->getCart();
+
+            foreach ($items as $item) {
+                [$id, $quantity] = explode('_', $item);
+
+                $uCart = UserCartProduct::where('cart_id', $cart->id)
+                    ->where('product_id', $id)
+                    ->first();
+                if($uCart) {
+                    $uCart->quantity = $quantity;
+                    $uCart->save();
+                }
+            }
+        } else {
+            $cartQty = session('USR_CART_QTY');
+            $newCarts = [];
+            foreach ($items as $item) {
+                [$id, $quantity] = explode('_', $item);
+                $newCarts[$id] = $quantity;
+            }
+            session()->put('USR_CART_QTY', $newCarts);
+        }
+
+        $ward = GhnWard::with('district.province')->find($wardId);
+
+        $fee = 0;
+
+        if($ward) {
+            if($ward && $ward->district && $ward->district->province) {
+                $provinceid = $ward->district->province->province_id;
+                $districtid = $ward->district->district_id;
+                $wardid     = $ward->code;
+                try {
+                    $fee = $this->_shippingService->shipping($wardid, $districtid, $provinceId, GiaoHangNhanh::TIET_KIEM);;
+                } catch (\Exception $e) {
+
+                }
+            }
+        }
+
         return response()->json([
             'VALID' => true,
-            'FREE_CITY' => $freeCity ? 1 : 0
+            'FREE_CITY' => $freeCity ? 1 : 0,
+            'FEE' => $fee,
+            'items' => $items
         ]);
     }
 

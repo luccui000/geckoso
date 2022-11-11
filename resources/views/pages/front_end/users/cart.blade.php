@@ -1,16 +1,18 @@
 <?php
 $apiCore = new \App\Api\Core;
 $viewer = $apiCore->getViewer();
-$viewer->load('category.discount');
 
 $discountType = null;
 $discountValue = 0;
 $discount = 0;
 
+if($viewer) {
+    $viewer->load('category.discount');
 
-if($viewer->category && $viewer->category->discount) {
-    $discountType = $viewer->category->discount->type;
-    $discountValue = $viewer->category->discount->value;
+    if($viewer->category && $viewer->category->discount) {
+        $discountType = $viewer->category->discount->type;
+        $discountValue = $viewer->category->discount->value;
+    }
 }
 $apiMobile = new \App\Api\Mobile;
 $isMobile = $apiMobile->isMobile() ? 1 : 0;
@@ -173,7 +175,6 @@ $URLCart = url('chinh-sach-thanh-toan');
                             $freeShip = true; // free
                         } else {
                             $priceAll = $priceAll + $shippingFee;
-                            $shippingFee = 1000;
                         }
 
                         if($discountType == 'percent') {
@@ -181,7 +182,6 @@ $URLCart = url('chinh-sach-thanh-toan');
                         } else if ($discountType == 'amount') {
                             $discountAmount = $discountValue;
                         }
-                        echo $priceAll . ' ' . $shippingFee . ' ' . $discountValue;
                         // Gia cuoi cung = Thanh tien - tien duoc giam + phi ship
                         $priceFinal = $priceAll - $discountAmount + $shippingFee;
                     ?>
@@ -249,10 +249,14 @@ $URLCart = url('chinh-sach-thanh-toan');
                                 </td>
                                 <td class="text-center mini_cart_actions" style="width: 33.33%;">
                                     <div class="quantity pr mr__10 qty__true" style="margin: 0 auto;">
-                                        <input type="number" class="input-text qty text tc qty_pr_js"
-                                               step="1" min="1" max="9999" name="quantity"
-                                               size="4" pattern="[0-9]*" inputmode="numeric"
-                                               value="{{$quantity}}"  onkeyup="jscartdhmq({{$product->id}})"
+                                        <input
+                                            type="number"
+                                            class="input-text qty text tc qty_pr_js"
+                                            step="1" min="1" max="9999"
+                                            name="quantity"
+                                            size="4" pattern="[0-9]*" inputmode="numeric"
+                                            value="{{ $quantity }}"
+                                            onkeyup="jscartdhmq({{$product->id}})"
                                         >
                                         <div class="qty tc fs__14">
                                             <a onclick="jscartdhmu({{$product->id}});jscartdhvalid(false);"
@@ -953,7 +957,13 @@ $URLCart = url('chinh-sach-thanh-toan');
                                     </div>
                                     <div class="col-md-5 mb__10 text-right">
                                         <strong class="text-black fs-18">
-                                            <span class="number_format" id="cart_all">{{ $priceAll }}</span>
+                                            <span
+                                                class="number_format"
+                                                id="cart_all"
+                                                data-value="{{ $priceAll }}"
+                                            >
+                                                {{ $priceAll }}
+                                            </span>
                                             <span class="currency_format">₫</span>
                                         </strong>
                                     </div>
@@ -964,19 +974,25 @@ $URLCart = url('chinh-sach-thanh-toan');
                                         <input name="coupon" class="text-center text-uppercase" type="text" onkeypress="pressNoSpace(event)" placeholder="nhập mã khuyến mãi" />
                                     </div>
                                 </div>
-                                <div class="row text-right ma_giam_gia">
-                                    <div class="col-md-7 mb__10 text-right">
-                                        <label class="frm-label">giảm giá đặc biệt:</label>
+                                @if($viewer)
+                                    <div class="row text-right ma_giam_gia  ">
+                                        <div class="col-md-7 mb__10 text-right">
+                                            <label class="frm-label">giảm giá đặc biệt:</label>
+                                        </div>
+                                        <div class="col-md-5 mb__10 text-right">
+                                            <strong class="text-black fs-18">
+                                                <span
+                                                    class="number_format"
+                                                    id="cart_discount"
+                                                    data-value="{{ $discountAmount }}"
+                                                >
+                                                    {{ $discountAmount }}
+                                                </span>
+                                                <span class="currency_format">₫</span>
+                                            </strong>
+                                        </div>
                                     </div>
-                                    <div class="col-md-5 mb__10 text-right">
-                                        <strong class="text-black fs-18">
-                                            <span class="number_format" id="cart_discount">
-                                                {{ $discountAmount }}
-                                            </span>
-                                            <span class="currency_format">₫</span>
-                                        </strong>
-                                    </div>
-                                </div>
+                                @endif
                                 <div class="row text-right">
                                     <div class="col-md-7 mb__10 text-right">
                                         <label class="frm-label">phí giao hàng:</label>
@@ -987,6 +1003,7 @@ $URLCart = url('chinh-sach-thanh-toan');
                                                 class="number_format"
                                                 id="cart_shipping"
                                                 class="@if($freeShip) line_through @endif"
+                                                data-value="{{ $shippingFee }}"
                                             >
                                                 {{$shippingFee}}
                                             </span>
@@ -1003,6 +1020,7 @@ $URLCart = url('chinh-sach-thanh-toan');
                                             <span
                                                 class="number_format text-bold"
                                                 id="cart_total"
+                                                data-value="{{ $priceFinal }}"
                                             >
                                                 {{ $priceFinal }}
                                             </span>
@@ -1040,10 +1058,12 @@ $URLCart = url('chinh-sach-thanh-toan');
                     <input type="hidden" name="total_order" value="0" />
 
                     <input type="hidden" name="total_all" value="{{$priceAll}}" />
-                    <input type="hidden" name="total_paid" value="{{ $priceFinal }}" />
+                    <input type="hidden" name="total_paid" value="{{  $priceFinal }}" />
                     <input type="hidden" name="total_paid_no_ship" value="{{ $priceFinal - $shippingFee }}" />
                     <input type="hidden" name="payment_by" value="cod" />
 
+                    <input type="hidden" name="discount_type" value="{{ $discountType }}" />
+                    <input type="hidden" name="discount_value" value="{{ $discountValue }}" />
                     <input type="hidden" name="percent_type" value="{{ $discountType }}" />
                     <input type="hidden" name="percent_discount" value="{{ $discountType == 'percent' ? $discountAmount : 0 }}" />
                     <input type="hidden" name="total_discount" value="{{ $discountAmount }}" />
@@ -1109,6 +1129,7 @@ $URLCart = url('chinh-sach-thanh-toan');
         </div>
     </div>
 
+    <script src="{{ url('public/js/ttv/fe/cart.js') }}"></script>
     <script type="text/javascript">
         jQuery(document).ready(function () {
             jscartdhcal();
